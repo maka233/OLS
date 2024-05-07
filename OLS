@@ -1,0 +1,41 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+# 魔法方法，可以将matplotlib的图表直接嵌入到Notebook之中
+%matplotlib inline
+
+data = pd.read_excel("jx交通碳排放（训练集）2007-2016.xlsx")  #  训练集
+# data
+
+# 描述性统计
+data.describe()
+
+## OLS回归
+x = data[['P','U','E','PGDP','PT','FT','CI']]
+y = data['TE']
+x=sm.add_constant(x) #添加常数项
+est=sm.OLS(y,x)
+model=est.fit()#建立最小二乘回归模型
+print(model.summary())
+
+# 提取残差序列
+y_pred = model.predict(x)  
+residuals = y - y_pred 
+residuals = residuals.tolist()  # 转为列表形式
+# df = pd.DataFrame(residuals, columns = ['残差'])
+# df.to_excel('output_residuals.xlsx',index = False)
+#residuals
+
+# 提取各自变量系数
+xishu = model.params
+residuals = model.resid
+const = xishu['const']
+u = xishu['U']
+p = xishu['P']
+pgdp = xishu['PGDP']
+e = xishu['E']
+pt = xishu['PT']
+ft = xishu['FT']
+ci = xishu['CI']
+residuals.tolist()   # 将残差转化为列表类型
